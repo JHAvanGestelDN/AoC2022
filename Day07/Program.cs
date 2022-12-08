@@ -12,47 +12,42 @@ namespace Day07
 
         protected override long SolveOne()
         {
-            var list = ReadFileToArray(PathOneSample).ToList();
-            Node root = CreateDirectory(list);
+            var list = ReadFileToArray(PathOne).ToList();
+            Node root = CreateFile(list);
+            DetermineDirSizes(root);
 
-            CalculateSize(root);
-            var x =  directorySizes.Where(d => d.Value <= 100000).ToList();
-          
-            return x.Sum(x=>x.Value);
+            return directories.Where(d => d.size <= 100000).ToList().Sum(d => d.size);
         }
 
-        public Dictionary<string, long> directorySizes = new Dictionary<string, long>();
-        private long CalculateSize(Node n)
+        public void DetermineDirSizes(Node root)
         {
-            long fileSize = n.files.Sum(f => f.size);
-   
-            if (n.directories.Count == 0)
-            {
-                directorySizes[n.name] = fileSize;
-                return fileSize;
-            }
-            else
-            {
-                long directorySize = 0;
-                foreach (var nDirectory in n.directories)
-                {
-                    directorySize += CalculateSize(nDirectory);
-                }
-                directorySizes[n.name] = directorySize+ fileSize;
-                return directorySize + fileSize;
-            }
+            if (root.size != 0 || (root.directories.Count == 0 && root.files.Count == 0))
+                return;
 
-
+            if (root.directories.Count == 0)
+            {
+                root.size = root.files.Sum(f => f.size);
+                return;
+            }
+            root.size = root.files.Sum(f => f.size);
+            foreach (var dir in root.directories)
+            {
+                DetermineDirSizes(dir);
+                root.size += dir.size;
+            }
         }
+        public List<Node> directories = new();
 
-        private Node CreateDirectory(List<string> commands)
+
+        private Node CreateFile(IEnumerable<string> commands)
         {
             Node parent = new Node(null, "root", 0);
-            return CreateDirectory(parent, commands.Skip(1).ToList()).getRoot();
-            
+            directories.Add(parent);
+            return CreateFile(parent, commands.Skip(1).ToList()).getRoot();
+
         }
 
-        private Node CreateDirectory(Node current, List<string> commands)
+        private Node CreateFile(Node current, IReadOnlyCollection<string> commands)
         {
             if (commands.Count == 0)
                 return current;
@@ -61,26 +56,31 @@ namespace Day07
             var newCommands = commands.Skip(1).ToList();
             if (split[0] == "$" && split[1] == "cd")
             {
-                return CreateDirectory(
-                    split[2] == ".." ? current.parent : current.directories.FirstOrDefault(n => n.name == split[2])!,
-                    newCommands);
+
+                return CreateFile(
+                split[2] == ".." ? current.parent : current.directories.FirstOrDefault(n => n.name == split[2])!,
+                newCommands);
             }
             if (split[0] == "$" && split[1] == "ls")
             {
-                return CreateDirectory(current, newCommands);
+                return CreateFile(current, newCommands);
             }
-            
+
 
             if (split[0] == "dir")
             {
-                current.directories.Add(new Node(current, split[1], 0));
-                return CreateDirectory(current, newCommands);
+
+                Node dir = new Node(current, split[1], 0);
+                directories.Add(dir);
+                current.directories.Add(dir);
+                return CreateFile(current, newCommands);
             }
 
             if (long.TryParse(split[0], out long n))
             {
-                current.files.Add(new Node(current, split[1], n));
-                return CreateDirectory(current, newCommands);
+                Node file = new Node(current, split[1], n);
+                current.files.Add(file);
+                return CreateFile(current, newCommands);
             }
 
             return current;
@@ -89,7 +89,13 @@ namespace Day07
 
         protected override long SolveTwo()
         {
-            throw new System.NotImplementedException();
+            const long fileSystemSize = 70000000;
+            long usedSpace = directories.First(d => d.name == "root").size;
+            const long neededSpace = 30000000;
+            long minDirectorySize = (fileSystemSize - usedSpace - neededSpace) * -1;
+            List<Node> potentialDirectoriesToDelete = directories.Where(d => d.size >= minDirectorySize).OrderBy(d => d.size).ToList();
+
+            return potentialDirectoriesToDelete.First().size;
         }
     }
 
@@ -113,6 +119,10 @@ namespace Day07
         public Node getRoot()
         {
             return parent == null ? this : parent.getRoot();
+        }
+        public string toString()
+        {
+            return name;
         }
     }
 }
