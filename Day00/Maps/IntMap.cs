@@ -92,8 +92,6 @@ namespace Day00.Maps
 
         public int CalculateScenicScore(IntNode node)
         {
-            if (node.Value == 5)
-                Console.WriteLine();
             int score = 1;
             foreach (Direction direction in Direction.GetValues(typeof(Direction)))
             {

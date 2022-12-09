@@ -18,9 +18,9 @@
             Z = z;
         }
 
-        public int X { get; }
-        public int Y { get; }
-        public int Z { get; }
+        public int X { get; set; }
+        public int Y { get; set; }
+        public int Z { get; set; }
 
         protected bool Equals(Coordinate other)
         {

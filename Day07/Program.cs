@@ -16,7 +16,7 @@ namespace Day07
             Node root = CreateFile(list);
             DetermineDirSizes(root);
 
-            return directories.Where(d => d.size <= 100000).ToList().Sum(d => d.size);
+            return directories.Where(d => d.size <= 100000).Sum(d => d.size);
         }
 
         public void DetermineDirSizes(Node root)
