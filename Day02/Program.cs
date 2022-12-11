@@ -1,36 +1,23 @@
 ﻿using Day00;
-
 namespace Day02
 {
     internal class Program : Base
     {
         public static void Main(string[] args)
         {
-            Program p = new();
+            new Program();
         }
 
-        protected override long SolveOne()
+        override protected long SolveOne()
         {
             var list = ReadFileToArray(PathOne);
-            int score = 0;
-            foreach (var s in list)
-            {
-                var split = s.Split(" ");
-                score += new RockPaperScissors(split[0], split[1]).points;
-            }
-            return score;
+            return list.Select(s => s.Split(" ")).Select(split => new RockPaperScissors(split[0], split[1]).points).Sum();
         }
 
-        protected override long SolveTwo()
+        override protected long SolveTwo()
         {
             var list = ReadFileToArray(PathOne);
-            int score = 0;
-            foreach (var s in list)
-            {
-                var split = s.Split(" ");
-                score += new RockPaperScissors(split[0], split[1],true).points;
-            }
-            return score;
+            return list.Select(s => s.Split(" ")).Select(split => new RockPaperScissors(split[0], split[1], true).points).Sum();
         }
     }
 }

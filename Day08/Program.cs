@@ -1,28 +1,27 @@
 ﻿using Day00;
 using Day00.Maps;
-
 namespace Day08
 {
     internal class Program : Base
     {
         public static void Main(string[] args)
         {
-            Program p = new();
+            new Program();
         }
 
-        protected override long SolveOne()
+        override protected long SolveOne()
         {
             var list = ReadFileToArray(PathOne);
-            IntMap map = IntMap.CreateMap(list);
+            var map = IntMap.CreateMap(list);
 
             return map.CountVisible();
 
         }
 
-        protected override long SolveTwo()
+        override protected long SolveTwo()
         {
             var list = ReadFileToArray(PathOne);
-            IntMap map = IntMap.CreateMap(list);
+            var map = IntMap.CreateMap(list);
 
             return map.DetermineNodeWithHighestScore();
         }

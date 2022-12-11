@@ -1,15 +1,14 @@
 ﻿using Day00;
-
 namespace Day01
 {
     internal class Program : Base
     {
         public static void Main(string[] args)
         {
-            Program p = new Program();
+            new Program();
         }
 
-        protected override long SolveOne()
+        override protected long SolveOne()
         {
             var list = ReadFileToArray(PathOne);
             long max = -1;
@@ -27,7 +26,7 @@ namespace Day01
             return max;
         }
 
-        protected override long SolveTwo()
+        override protected long SolveTwo()
         {
             var list = ReadFileToArray(PathOne);
             var sortedList = new SortedSet<long>();
@@ -46,5 +45,4 @@ namespace Day01
             //todo rework to LINQ
         }
     }
-   
 }

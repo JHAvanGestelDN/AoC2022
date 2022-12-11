@@ -1,24 +1,23 @@
 ﻿using Day00;
-
 namespace Day05
 {
     internal class Program : Base
     {
         public static void Main(string[] args)
         {
-            Program p = new();
+            new Program();
         }
 
-        protected override long SolveOne()
+        override protected long SolveOne()
         {
             var list = ReadFileToArray(PathOne).ToList();
-            var stackHeadings = list.FirstOrDefault(s => s.Count() > 1 && s[1] == '1');
+            var stackHeadings = list.FirstOrDefault(s => s.Length > 1 && s[1] == '1');
             var stackHeadingsIdx = list.IndexOf(stackHeadings);
             var numberOfStacks = int.Parse(stackHeadings.Trim().Split(' ').Last());
 
             //create a list with stack and fill the list with the amount of stacks we have just determined.
-            List<Stack<string>> stacks = new();
-            for (int i = 0; i < numberOfStacks; i++)
+            var stacks = new List<Stack<string>>();
+            for (var i = 0; i < numberOfStacks; i++)
                 stacks.Add(new Stack<string>());
 
             ParseStacks(stackHeadingsIdx, list, stacks);
@@ -28,9 +27,9 @@ namespace Day05
             //execute moves
             foreach (var move in moves)
             {
-                for (int i = 0; i < move.Count; i++)
+                for (var i = 0; i < move.Count; i++)
                 {
-                    int indexOffset = 1;
+                    const int indexOffset = 1;
                     var item = stacks[move.From - indexOffset].Pop(); //pop the item onto a tmp variable
                     stacks[move.To - indexOffset].Push(item); // push te tmp to the destination stack.
                 }
@@ -50,10 +49,10 @@ namespace Day05
         }
         private static List<Move> ParseMoves(int stackHeadingsIdx, IReadOnlyList<string> list)
         {
-            List<Move> moves = new List<Move>();
-            for (int i = stackHeadingsIdx + 2; i < list.Count; i++) //moves start 2 lines below the stackheading
+            var moves = new List<Move>();
+            for (var i = stackHeadingsIdx + 2; i < list.Count; i++) //moves start 2 lines below the stackheading
             {
-                string s = list[i];
+                var s = list[i];
                 var split = s.Split(" from ");
                 var subsplit = split[1].Split(" to ");
 
@@ -70,10 +69,10 @@ namespace Day05
         private static void ParseStacks(int stackHeadingsIdx, IReadOnlyList<string> list, IReadOnlyList<Stack<string>> stacks)
         {
             //Iterate the list starting from the stackheading -1 because thats where the bottom crates are.
-            for (int j = stackHeadingsIdx - 1; j >= 0; j--)
+            for (var j = stackHeadingsIdx - 1; j >= 0; j--)
             {
-                string s = list[j];
-                for (int i = 1; i < s.Length; i += 4) //skip first character and increment bij 4. Basically we skip the: '] [' part. 
+                var s = list[j];
+                for (var i = 1; i < s.Length; i += 4) //skip first character and increment bij 4. Basically we skip the: '] [' part. 
                 {
                     if (s[i] == ' ') //at that location there is no crate
                         continue;
@@ -84,16 +83,16 @@ namespace Day05
             }
         }
 
-        protected override long SolveTwo()
+        override protected long SolveTwo()
         {
             var list = ReadFileToArray(PathOne).ToList();
-            var stackHeadings = list.FirstOrDefault(s => s.Count() > 1 && s[1] == '1');
+            var stackHeadings = list.FirstOrDefault(s => s.Length > 1 && s[1] == '1');
             var stackHeadingsIdx = list.IndexOf(stackHeadings);
             var numberOfStacks = int.Parse(stackHeadings.Trim().Split(' ').Last());
 
             //create a list with stack and fill the list with the amount of stacks we have just determined.
-            List<Stack<string>> stacks = new();
-            for (int i = 0; i < numberOfStacks; i++)
+            var stacks = new List<Stack<string>>();
+            for (var i = 0; i < numberOfStacks; i++)
                 stacks.Add(new Stack<string>());
 
             ParseStacks(stackHeadingsIdx, list, stacks);
@@ -103,10 +102,10 @@ namespace Day05
             //execute moves
             foreach (var move in moves)
             {
-                Stack<string> tmp = new Stack<string>();
-                for (int i = 0; i < move.Count; i++)
+                var tmp = new Stack<string>();
+                for (var i = 0; i < move.Count; i++)
                 {
-                    int indexOffset = 1;
+                    const int indexOffset = 1;
                     var item = stacks[move.From - indexOffset].Pop();
                     tmp.Push(item);
                 }
@@ -123,8 +122,8 @@ namespace Day05
 
     public class Move
     {
-        public int From { get; set; }
-        public int To { get; set; }
-        public int Count { get; set; }
+        public int From { get; init; }
+        public int To { get; init; }
+        public int Count { get; init; }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-using Day00.Nodes;
-
+﻿using Day00.Nodes;
 namespace Day00.Maps
 {
     public class CharMap : AbstractMap<CharGenericNode, char>
@@ -11,10 +9,10 @@ namespace Day00.Maps
 
         public int CountValues()
         {
-            int sum = 0;
-            for (int i = 0; i < Map.GetLength(0); i++)
+            var sum = 0;
+            for (var i = 0; i < Map.GetLength(0); i++)
             {
-                for (int j = 0; j < Map.GetLength(1); j++)
+                for (var j = 0; j < Map.GetLength(1); j++)
                 {
                     if (Map[i, j] != null && Map[i, j].Value == '#')
                         sum++;
@@ -23,7 +21,5 @@ namespace Day00.Maps
 
             return sum;
         }
-
- 
     }
 }

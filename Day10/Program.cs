@@ -1,19 +1,20 @@
 ﻿using Day00;
-
 namespace Day10
 {
     internal class Program : Base
     {
         public static void Main(string[] args)
         {
-            Program p = new();
+            new Program();
         }
 
-        protected override long SolveOne()
+        override protected long SolveOne()
         {
             var list = ReadFileToArray(PathOne);
-            List<string> newList = new List<string>();
-            newList.Add("noop"); // add a dummy value to make the index match the value
+            var newList = new List<string>
+            {
+            "noop" // add a dummy value to make the index match the value
+            };
 
             foreach (var s in list)
             {
@@ -21,8 +22,8 @@ namespace Day10
                     newList.Add("noop");
                 newList.Add(s);
             }
-            int cpuValue = 1;
-            int result = 0;
+            var cpuValue = 1;
+            var result = 0;
 
             for (var i = 0; i < newList.Count; i++)
             {
@@ -32,7 +33,7 @@ namespace Day10
                     Console.WriteLine($"{i} * {cpuValue} = {i * cpuValue}");
                     result += i * cpuValue;
                 }
-                string s = newList[i];
+                var s = newList[i];
                 if (s == "noop")
                     continue;
                 var split = s.Split(" ");
@@ -42,11 +43,13 @@ namespace Day10
             return result;
         }
 
-        protected override long SolveTwo()
+        override protected long SolveTwo()
         {
             var list = ReadFileToArray(PathOne);
-            List<string> newList = new List<string>();
-            newList.Add("noop"); // add a dummy value to make the index match the value
+            var newList = new List<string>
+            {
+            "noop" // add a dummy value to make the index match the value
+            };
 
             foreach (var s in list)
             {
@@ -54,8 +57,8 @@ namespace Day10
                     newList.Add("noop");
                 newList.Add(s);
             }
-            int cpuValue = 1;
-            int currentDrawingPixel = 0;
+            var cpuValue = 1;
+            var currentDrawingPixel = 0;
             for (var i = 0; i < newList.Count; i++) //cycle
             {
 
@@ -74,7 +77,7 @@ namespace Day10
                     currentDrawingPixel = 0;
                 }
 
-                string s = newList[i];
+                var s = newList[i];
                 if (s == "noop")
                     continue;
                 var split = s.Split(" ");

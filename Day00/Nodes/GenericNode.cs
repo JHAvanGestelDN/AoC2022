@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Day00.Nodes
+﻿namespace Day00.Nodes
 {
     public class GenericNode<T, V>
     {
@@ -11,8 +9,8 @@ namespace Day00.Nodes
         }
 
         public Coordinate Coordinate { get; }
-        public List<T> Neighbours { get; } = new();
-        public V Value { get; set; }
+        public List<T> Neighbours { get; } = new List<T>();
+        public V Value { get; }
 
         public void AddNeighbours(T[,] map)
         {

@@ -1,7 +1,5 @@
-﻿using System;
-using Day00.Nodes;
-
-namespace Day00
+﻿using Day00.Nodes;
+namespace Day00.Maps
 {
     public abstract class AbstractMap<T, V> where T : GenericNode<T, V>
     {
@@ -14,9 +12,9 @@ namespace Day00
 
         public void Print()
         {
-            for (int i = 0; i < Map.GetLength(0); i++)
+            for (var i = 0; i < Map.GetLength(0); i++)
             {
-                for (int j = 0; j < Map.GetLength(1); j++)
+                for (var j = 0; j < Map.GetLength(1); j++)
                 {
                     Console.Write(Map[i, j] != null ? Map[i, j].Value : ' ');
                 }
@@ -29,9 +27,9 @@ namespace Day00
 
         public static void AddNeighbours(T[,] map)
         {
-            for (int i = 0; i < map.GetLength(0); i++)
+            for (var i = 0; i < map.GetLength(0); i++)
             {
-                for (int j = 0; j < map.GetLength(1); j++)
+                for (var j = 0; j < map.GetLength(1); j++)
                 {
                     map[i, j].AddNeighboursDiagonal(map);
                 }

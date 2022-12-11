@@ -1,6 +1,6 @@
 ﻿namespace Day00
 {
-    public class Coordinate
+    public sealed class Coordinate
     {
         //2D coordinate
         public Coordinate(int x, int y)
@@ -18,9 +18,9 @@
             Z = z;
         }
 
-        public int X { get; set; }
-        public int Y { get; set; }
-        public int Z { get; set; }
+        public int X { get; }
+        public int Y { get; }
+        public int Z { get; }
 
         protected bool Equals(Coordinate other)
         {
@@ -39,8 +39,8 @@
             unchecked
             {
                 var hashCode = X;
-                hashCode = (hashCode * 397) ^ Y;
-                hashCode = (hashCode * 397) ^ Z;
+                hashCode = hashCode * 397 ^ Y;
+                hashCode = hashCode * 397 ^ Z;
                 return hashCode;
             }
         }

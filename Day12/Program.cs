@@ -1,11 +1,11 @@
 ﻿using Day00;
 
-namespace Template
+namespace Day12
 {
     internal class Program : Base
     {
         public static void Main(string[] args)
-        {
+        { 
             new Program();
         }
 

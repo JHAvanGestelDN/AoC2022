@@ -2,10 +2,6 @@
 {
     public class RockPaperScissors
     {
-        private Shape opponentShape { get; set; }
-        private Shape playerShape { get; set; }
-        private int score { get; set; }
-        public int points { get; set; }
         public RockPaperScissors(string opponent, string player)
         {
             opponentShape = ConvertStringToShape(opponent);
@@ -20,6 +16,10 @@
             score = CalculateScore();
             points = score + (int)playerShape;
         }
+        private Shape opponentShape { get; }
+        private Shape playerShape { get; }
+        private int score { get; }
+        public int points { get; }
         private Shape DetermineNecessaryShape(string outcomeNeeded)
         {
             return outcomeNeeded switch

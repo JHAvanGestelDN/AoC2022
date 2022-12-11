@@ -1,15 +1,14 @@
 ﻿using Day00;
-
 namespace Day04
 {
     internal class Program : Base
     {
         public static void Main(string[] args)
         {
-            Program p = new();
+            new Program();
         }
 
-        protected override long SolveOne()
+        override protected long SolveOne()
         {
 
             var list = ReadFileToArray(PathOne);
@@ -30,7 +29,7 @@ namespace Day04
             return result;
         }
 
-        protected override long SolveTwo()
+        override protected long SolveTwo()
         {
             var list = ReadFileToArray(PathOne);
             var result = 0;

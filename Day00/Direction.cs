@@ -1,10 +1,10 @@
-﻿namespace Day00.Maps
+﻿namespace Day00
 {
     public enum Direction
     {
-        UP,
-        RIGHT,
-        DOWN,
-        LEFT
+        Up,
+        Right,
+        Down,
+        Left
     }
 }

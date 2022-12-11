@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Reflection;
-
 namespace Day00
 {
     public abstract class Base
@@ -29,7 +24,7 @@ namespace Day00
         }
 
 
-        private Stopwatch Stopwatch { get; } = new();
+        private Stopwatch Stopwatch { get; } = new Stopwatch();
 
         private (long res, TimeSpan time) Run(Func<long> solve)
         {
@@ -44,11 +39,11 @@ namespace Day00
         private static string GetPath(string filename)
         {
             return Path.Combine(
-                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ??
-                throw new InvalidOperationException(), filename);
+            Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ??
+            throw new InvalidOperationException(), filename);
         }
 
-        protected static string[] ReadFileToArray(string path)
+        static protected string[] ReadFileToArray(string path)
         {
             try
             {
@@ -57,16 +52,16 @@ namespace Day00
             catch (FileNotFoundException e)
             {
                 Console.WriteLine("File not found: " + path);
-                return null;
+                return Array.Empty<string>();
             }
         }
 
-        protected static List<long> ConvertArrayToLongList(string[] array)
+        static protected List<long> ConvertArrayToLongList(string[] array)
         {
             return array != null ? array.Select(long.Parse).ToList() : new List<long>();
         }
 
-        protected static List<int> ConvertArrayToIntList(string[] array)
+        static protected List<int> ConvertArrayToIntList(string[] array)
         {
             return array != null ? array.Select(int.Parse).ToList() : new List<int>();
         }
@@ -74,12 +69,12 @@ namespace Day00
 
         public static string ReverseString(string s)
         {
-            char[] charArray = s.ToCharArray();
+            var charArray = s.ToCharArray();
             Array.Reverse(charArray);
             return new string(charArray);
         }
 
-        protected abstract long SolveOne();
-        protected abstract long SolveTwo();
+        abstract protected long SolveOne();
+        abstract protected long SolveTwo();
     }
 }

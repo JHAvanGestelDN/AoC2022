@@ -1,28 +1,28 @@
 ﻿using Day00;
-using Day00.Maps;
-
 namespace Day09
 {
     internal class Program : Base
     {
         public static void Main(string[] args)
         {
-            Program p = new();
+            new Program();
         }
 
-        protected override long SolveOne()
+        override protected long SolveOne()
         {
             var list = ReadFileToArray(PathOne);
 
-            Coordinate head = new Coordinate(0, 0);
-            Coordinate tail = new Coordinate(0, 0);
-            HashSet<Coordinate> tailCoordinates = new HashSet<Coordinate>();
-            tailCoordinates.Add(new Coordinate(0, 0));
+            var head = new Coordinate(0, 0);
+            var tail = new Coordinate(0, 0);
+            var tailCoordinates = new HashSet<Coordinate>
+            {
+            new Coordinate(0, 0)
+            };
 
             foreach (var s in list)
             {
-                Move m = new Move(s);
-                for (int i = 0; i < m.distance; i++)
+                var m = new Move(s);
+                for (var i = 0; i < m.distance; i++)
                 {
                     head = m.ExecuteMove(head);
                     tail = Move.DeterminePosition(tail, head);
@@ -33,20 +33,20 @@ namespace Day09
             return tailCoordinates.Count;
         }
 
-        protected override long SolveTwo()
+        override protected long SolveTwo()
         {
             var list = ReadFileToArray(PathOne);
-            Coordinate head = new Coordinate(0, 0);
-            Coordinate one = new Coordinate(0, 0);
-            Coordinate two = new Coordinate(0, 0);
-            Coordinate three = new Coordinate(0, 0);
-            Coordinate four = new Coordinate(0, 0);
-            Coordinate five = new Coordinate(0, 0);
-            Coordinate six = new Coordinate(0, 0);
-            Coordinate seven = new Coordinate(0, 0);
-            Coordinate eight = new Coordinate(0, 0);
-            Coordinate nine = new Coordinate(0, 0);
-            HashSet<Coordinate> tailCoordinates = new HashSet<Coordinate>
+            var head = new Coordinate(0, 0);
+            var one = new Coordinate(0, 0);
+            var two = new Coordinate(0, 0);
+            var three = new Coordinate(0, 0);
+            var four = new Coordinate(0, 0);
+            var five = new Coordinate(0, 0);
+            var six = new Coordinate(0, 0);
+            var seven = new Coordinate(0, 0);
+            var eight = new Coordinate(0, 0);
+            var nine = new Coordinate(0, 0);
+            var tailCoordinates = new HashSet<Coordinate>
             {
             new Coordinate(0, 0)
             };
@@ -54,8 +54,8 @@ namespace Day09
 
             foreach (var s in list)
             {
-                Move m = new Move(s);
-                for (int i = 0; i < m.distance; i++)
+                var m = new Move(s);
+                for (var i = 0; i < m.distance; i++)
                 {
                     head = m.ExecuteMove(head);
                     one = Move.DeterminePosition(one, head);
@@ -76,32 +76,31 @@ namespace Day09
     }
     public class Move
     {
-        public Direction direction { get; }
-        public int distance { get; }
-
         public Move(string input)
         {
             var split = input.Split(' ');
-            direction = input[0] == 'R' ? Direction.RIGHT : input[0] == 'L' ? Direction.LEFT : input[0] == 'U' ? Direction.UP : Direction.DOWN;
+            direction = input[0] == 'R' ? Direction.Right : input[0] == 'L' ? Direction.Left : input[0] == 'U' ? Direction.Up : Direction.Down;
             distance = int.Parse(split[1]);
         }
+        private Direction direction { get; }
+        public int distance { get; }
         public Coordinate ExecuteMove(Coordinate coordinate)
         {
             //modify coordinate based on direction
-            int y = coordinate.Y;
-            int x = coordinate.X;
+            var y = coordinate.Y;
+            var x = coordinate.X;
             switch (direction)
             {
-                case Direction.UP:
+                case Direction.Up:
                     y++;
                     break;
-                case Direction.DOWN:
+                case Direction.Down:
                     y--;
                     break;
-                case Direction.LEFT:
+                case Direction.Left:
                     x--;
                     break;
-                case Direction.RIGHT:
+                case Direction.Right:
                     x++;
                     break;
                 default:
@@ -119,8 +118,8 @@ namespace Day09
 
             var xDif = tail.X - head.X;
             var yDif = tail.Y - head.Y;
-            int newX = tail.X;
-            int newY = tail.Y;
+            var newX = tail.X;
+            var newY = tail.Y;
             //move diagonally
             if (xDif != 0 && yDif != 0)
             {
@@ -145,7 +144,7 @@ namespace Day09
         private static bool HeadAndTailTouching(Coordinate tail, Coordinate head)
         {
 
-            bool touching = tail.X == head.X && tail.Y == head.Y;
+            var touching = tail.X == head.X && tail.Y == head.Y;
 
 
             if (tail.X == head.X)
