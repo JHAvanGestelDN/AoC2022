@@ -10,7 +10,13 @@
 
         public Coordinate Coordinate { get; }
         public List<T> Neighbours { get; } = new List<T>();
-        public V Value { get; }
+        public V Value { get; set; }
+
+        //Pathfinding attributes
+        public GenericNode<T,V> previous { get; set; }
+        public int cost { get; set; } = Int32.MaxValue;
+
+
 
         public void AddNeighbours(T[,] map)
         {
@@ -45,30 +51,21 @@
 
         protected bool Equals(GenericNode<T, V> other)
         {
-            return Equals(Coordinate, other.Coordinate);
+            return Coordinate.Equals(other.Coordinate) && EqualityComparer<V>.Default.Equals(Value, other.Value) && ((Object)previous).Equals(other.previous) && cost == other.cost;
         }
-
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
+            if (ReferenceEquals(null, obj))
+                return false;
+            if (ReferenceEquals(this, obj))
+                return true;
+            if (obj.GetType() != this.GetType())
+                return false;
             return Equals((GenericNode<T, V>)obj);
         }
-
         public override int GetHashCode()
         {
-            return Coordinate != null ? Coordinate.GetHashCode() : 0;
-        }
-
-        public static bool operator ==(GenericNode<T, V> left, GenericNode<T, V> right)
-        {
-            return Equals(left, right);
-        }
-
-        public static bool operator !=(GenericNode<T, V> left, GenericNode<T, V> right)
-        {
-            return !Equals(left, right);
+            return HashCode.Combine(Coordinate, Value, previous, cost);
         }
     }
 }
