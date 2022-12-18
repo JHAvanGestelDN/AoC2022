@@ -58,15 +58,38 @@ namespace Day00.Maps
         {
             if (node == null)
                 return false;
-            if(node.Value == 'E')
+            if (node.Value == 'E')
                 return true;
-            return DetermineAsciiValue(node.Value.ToString()) - value == 1 || DetermineAsciiValue(node.Value.ToString()) - value == 0;
+            return DetermineAsciiValue(node.Value.ToString()) - value <= 1;
 
 
         }
         public static int DetermineAsciiValue(string s)
         {
             return Encoding.ASCII.GetBytes(s)[0];
+        }
+        public List<CharGenericNode> GetLowestElevationNodes()
+        {
+            var result = new List<CharGenericNode>();
+            for (var i = 0; i < Map.GetLength(0); i++)
+            {
+                for (var j = 0; j < Map.GetLength(1); j++)
+                {
+                    if (Map[i, j] != null && Map[i, j].Value == 'a' || Map[i, j].Value == 'S')
+                        result.Add(Map[i, j]);
+                }
+            }
+            return result;
+        }
+        public void ResetCost()
+        {
+            for (var i = 0; i < Map.GetLength(0); i++)
+            {
+                for (var j = 0; j < Map.GetLength(1); j++)
+                {
+                    Map[i, j].cost = Int32.MaxValue;
+                }
+            }
         }
     }
 }

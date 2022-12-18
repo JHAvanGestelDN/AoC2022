@@ -14,9 +14,49 @@ namespace Day12
         override protected long SolveOne()
         {
             var list = ReadFileToArray(PathOne);
+            var map = CreateMap(list, out var start, out var end);
+            map.FillNeighbours();
+
+            return Pathfinding(start, end);
+        }
+        private static int Pathfinding(CharGenericNode? start, CharGenericNode? end)
+        {
+
+            HashSet<CharGenericNode> openList = new HashSet<CharGenericNode>();
+            HashSet<CharGenericNode> closedList = new HashSet<CharGenericNode>();
+            start.cost = 0;
+            start.heuristic = start.CalculateHeuristic(end);
+
+            openList.Add(start);
+            while (openList.Count > 0)
+            {
+                CharGenericNode node = openList.OrderBy(n => n.heuristic + n.cost).First();
+                openList.Remove(node);
+                closedList.Add(node);
+                if (node == end)
+                    break;
+                foreach (var neighbour in node.Neighbours)
+                {
+                    if (closedList.Contains(neighbour))
+                        continue;
+                    int potentialBetterCost = node.cost + 1;
+                    neighbour.heuristic = neighbour.CalculateHeuristic(end);
+                    if (neighbour.cost > potentialBetterCost)
+                    {
+                        neighbour.cost = potentialBetterCost;
+                        neighbour.previous = node;
+                    }
+                    openList.Add(neighbour);
+                }
+            }
+            return end.cost;
+        }
+        private static CharMap CreateMap(string[] list, out CharGenericNode? start, out CharGenericNode? end)
+        {
+
             CharMap map = new CharMap(list.Length, list[0].Length);
-            CharGenericNode start = null;
-            CharGenericNode end = null;
+            start = null;
+            end = null;
             for (var i = 0; i < list.Length; i++)
             {
                 string s = list[i];
@@ -31,52 +71,27 @@ namespace Day12
                         end = node;
                 }
             }
-            end.Value = '{'; //ASCII charcter after z
-            //fill neighbours
-            map.FillNeighbours();
-
-            List<CharGenericNode> visited = new List<CharGenericNode>();
-            PriorityQueue<CharGenericNode, int> queue = new PriorityQueue<CharGenericNode, int>();
-            visited.Add(start);
-            start.cost = 0;
-            start.Neighbours.ForEach(n =>
-            {
-                n.previous= start;
-                n.cost = start.cost+1;
-                queue.Enqueue(n, n.cost);
-            });
-            while (queue.Count > 0)
-            {
-                var node = queue.Dequeue();
-
-                if (node.Value == 'k' )
-                    Console.WriteLine(" ");
-                foreach (var charGenericNode in node.Neighbours.Where(n=>!visited.Contains(n)))
-                {
-
-                    int tempDistance = node.cost + 1;
-                    if (tempDistance < charGenericNode.cost)
-                    {
-                        
-                        charGenericNode.previous = node;
-                        charGenericNode.cost = tempDistance;
-                        queue.Enqueue(charGenericNode, charGenericNode.cost);
-                    }
-                }
-                visited.Add(node);
-                if (node == end)
-                    break;
-            }
-            
-            
-        
-        return end.cost;
+            return map;
         }
-    
 
-    override protected long SolveTwo()
-    {
-        throw new System.NotImplementedException();
+
+        override protected long SolveTwo()
+        {
+            var list = ReadFileToArray(PathOne);
+            var map = CreateMap(list, out var start, out var end);
+            map.FillNeighbours();
+            List<CharGenericNode> lowestElevationNodes = map.GetLowestElevationNodes();
+            int lowestCost = int.MaxValue;
+            foreach (var lowestElevationNode in lowestElevationNodes)
+            {
+                map.ResetCost();
+                int tmpCost = Pathfinding(lowestElevationNode, end);
+                if (tmpCost < lowestCost)
+                    lowestCost = tmpCost;
+            }
+
+            
+            return lowestCost;
+        }
     }
-}
 }

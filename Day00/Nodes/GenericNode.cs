@@ -13,10 +13,15 @@
         public V Value { get; set; }
 
         //Pathfinding attributes
-        public GenericNode<T,V> previous { get; set; }
+        public GenericNode<T, V> previous { get; set; }
         public int cost { get; set; } = Int32.MaxValue;
+        public int heuristic { get; set; } = Int32.MaxValue;
+    
 
-
+        public int CalculateHeuristic(GenericNode<T, V> goal)
+        {
+            return Math.Abs(Coordinate.X - goal.Coordinate.X) + Math.Abs(Coordinate.Y - goal.Coordinate.Y);
+        }
 
         public void AddNeighbours(T[,] map)
         {
@@ -51,7 +56,7 @@
 
         protected bool Equals(GenericNode<T, V> other)
         {
-            return Coordinate.Equals(other.Coordinate) && EqualityComparer<V>.Default.Equals(Value, other.Value) && ((Object)previous).Equals(other.previous) && cost == other.cost;
+            return Coordinate.Equals(other.Coordinate);
         }
         public override bool Equals(object? obj)
         {
@@ -65,7 +70,27 @@
         }
         public override int GetHashCode()
         {
-            return HashCode.Combine(Coordinate, Value, previous, cost);
+            return Coordinate.GetHashCode();
         }
+        private sealed class CoordinateEqualityComparer : IEqualityComparer<GenericNode<T, V>>
+        {
+            public bool Equals(GenericNode<T, V> x, GenericNode<T, V> y)
+            {
+                if (ReferenceEquals(x, y))
+                    return true;
+                if (ReferenceEquals(x, null))
+                    return false;
+                if (ReferenceEquals(y, null))
+                    return false;
+                if (x.GetType() != y.GetType())
+                    return false;
+                return x.Coordinate.Equals(y.Coordinate);
+            }
+            public int GetHashCode(GenericNode<T, V> obj)
+            {
+                return obj.Coordinate.GetHashCode();
+            }
+        }
+        public static IEqualityComparer<GenericNode<T, V>> coordinateComparer { get; } = new CoordinateEqualityComparer();
     }
 }
