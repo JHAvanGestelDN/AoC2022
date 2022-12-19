@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using System.Text.Json.Nodes;
 using Day00;
 
 namespace Day13
@@ -17,15 +16,15 @@ namespace Day13
             list.Add("");
             string? first = null;
             string? second = null;
-            int result = 0;
+            List<int> indexes = new List<int>();
             int pairIndex = 1;
             foreach (string s in list)
             {
                 if (string.IsNullOrEmpty(s))
                 {
-
-                    var pairsInOrder = InOrder(JsonArray.Parse(first), JsonArray.Parse(second)); 
-                    result += pairsInOrder ? pairIndex : 0;
+                    var pairsInOrder = InOrder(JsonDocument.Parse(first!).RootElement, JsonDocument.Parse(second!).RootElement);
+                    if (pairsInOrder < 0)
+                        indexes.Add(pairIndex);
                     first = null;
                     second = null;
                     pairIndex++;
@@ -37,75 +36,60 @@ namespace Day13
                     second = s;
             }
 
-            return result;
+            return indexes.Sum();
         }
-        public bool InOrder(JsonNode first, JsonNode second)
+        private int InOrder(JsonElement first, JsonElement second)
         {
-            bool result = false;
-            if (first.AsArray().Count == 0 && second.AsArray().Count == 0)
-                return true;
-            if (first.AsArray().Count == 0 && second.AsArray().Count > 0)
-                return true;
-            if (first.AsArray().Count > 0 && second.AsArray().Count == 0)
-                return false;
-
-            //deterime if both values are lists
-            if (first[0].GetType().AssemblyQualifiedName.Contains("Array") && second[0].GetType().AssemblyQualifiedName.Contains("Array"))
-            {
-                
-                var x = JsonArray.Parse(first[0].ToJsonString());
-                var y = JsonArray.Parse(second[0].ToJsonString());
-                var compare = InOrder(x, y);
-                if (!compare)
-                    return false;
-                first.AsArray().Remove(first[0]);
-                second.AsArray().Remove(second[0]);
-                return InOrder(first, second);
-                
-
-            }
+            if (first.ValueKind == JsonValueKind.Number && second.ValueKind == JsonValueKind.Number)
+                return first.GetInt32() - second.GetInt32();
 
             //determine if both values are integers
-            if (first[0].GetType().AssemblyQualifiedName.Contains("Value") && second[0].GetType().AssemblyQualifiedName.Contains("Value"))
+            if (first.ValueKind != JsonValueKind.Number && second.ValueKind != JsonValueKind.Number)
             {
-                int firstValue = first[0].GetValue<int>();
-                int secondValue = second[0].GetValue<int>();
-                if (firstValue > secondValue)
-                    return false;
-                if (firstValue < secondValue)
-                    return true;
-                if (firstValue == secondValue)
+                for (int i = 0; i < first.GetArrayLength(); i++)
                 {
-                    //create a new json object with evertyhing but the first value
-
-                    first.AsArray().Remove(first[0]);
-                    second.AsArray().Remove(second[0]);
-                    return InOrder(first, second);
+                    if (i > second.GetArrayLength() - 1)
+                        break;
+                    var compare = InOrder(first[i], second[i]);
+                    if (compare != 0)
+                        return compare;
                 }
+                return first.GetArrayLength() - second.GetArrayLength();
             }
 
             // determine if one value is an integer and the other is a list
-            if (first[0].GetType().AssemblyQualifiedName.Contains("Value") && second[0].GetType().AssemblyQualifiedName.Contains("Array"))
-            {
-                var x = $"[{first[0]}]";
-                first[0] = JsonArray.Parse(x);
-                return InOrder(first, second);
-            }
-            if (first[0].GetType().AssemblyQualifiedName.Contains("Array") && second[0].GetType().AssemblyQualifiedName.Contains("Value"))
-            {
-                var x = $"[{second[0]}]";
-                second[0] = JsonArray.Parse(x);
-                return InOrder(first, second);
-            }
+            if (first.ValueKind == JsonValueKind.Number && second.ValueKind != JsonValueKind.Number)
+                return InOrder(JsonDocument.Parse($"[{first.GetInt32()}]").RootElement, second);
 
+            if (first.ValueKind != JsonValueKind.Number && second.ValueKind == JsonValueKind.Number)
+                return InOrder(first, JsonDocument.Parse($"[{second.GetInt32()}]").RootElement);
 
-            return result;
+            return -1;
         }
 
 
         override protected long SolveTwo()
         {
-            throw new System.NotImplementedException();
+            var list = ReadFileToArray(PathOne).ToList();
+
+            List<JsonElement> elements = (from s in list where !string.IsNullOrEmpty(s) select JsonDocument.Parse(s).RootElement).ToList();
+            
+            var two = JsonDocument.Parse("[[2]]").RootElement;
+            var six = JsonDocument.Parse("[[6]]").RootElement;
+            elements.Add(two);
+            elements.Add(six);
+
+
+            elements.Sort(InOrder);
+            int result = 1;
+            for (var i = 0; i < elements.Count; i++)
+            {
+                if (InOrder(elements[i], two) == 0 || InOrder(elements[i], six) == 0)
+                    result *= i + 1;
+            }
+
+
+            return result;
         }
     }
 }
