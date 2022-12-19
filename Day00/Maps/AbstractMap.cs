@@ -12,11 +12,11 @@ namespace Day00.Maps
 
         public void Print()
         {
-            for (var i = 0; i < Map.GetLength(0); i++)
+            for (var x = 0; x < Map.GetLength(1); x++)
             {
-                for (var j = 0; j < Map.GetLength(1); j++)
+                for (var y = 0; y < Map.GetLength(0); y++)
                 {
-                    Console.Write(Map[i, j] != null ? Map[i, j].Value : ' ');
+                    Console.Write(Map[y, x] != null ? Map[y, x].Value : '.');
                 }
 
                 Console.WriteLine();
